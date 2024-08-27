@@ -173,6 +173,46 @@ app.get('/applications', authenticateToken, async (req, res) => {
   }
 });
 
+// Crear un nuevo token (GET)
+app.get('/installtoken', authenticateToken, async (req, res) => {
+  try {
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 3600 * 1000); // Token expira en 1 hora
+    const newToken = await prisma.installationToken.create({
+      data: { token, expiresAt }
+    });
+    res.json(newToken);
+  } catch (error) {
+    res.status(500).json({ error: 'No se pudo crear el token' });
+  }
+});
+
+// Eliminar un token (DELETE)
+app.delete('/installtoken', authenticateToken, async (req, res) => {
+  try {
+    const installToken = req.query.install_token || req.body.install_token;
+    if (!installToken) {
+      return res.status(400).json({ error: 'Falta el parámetro install_token' });
+    }
+    await prisma.installationToken.delete({
+      where: { token: installToken }
+    });
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(500).json({ error: 'No se pudo eliminar el token' });
+  }
+});
+
+// Mostrar todos los tokens de instalación (GET)
+app.get('/installtokens', authenticateToken, async (req, res) => {
+  try {
+    const tokens = await prisma.installationToken.findMany();
+    res.json(tokens);
+  } catch (error) {
+    res.status(500).json({ error: 'No se pudo obtener los tokens' });
+  }
+});
+
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
