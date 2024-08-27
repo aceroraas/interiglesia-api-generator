@@ -3,6 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const getPort = require('get-port');
 
 const prisma = new PrismaClient();
 const app = express();
@@ -213,6 +214,9 @@ app.get('/installtokens', authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
+(async () => {
+  const port = await getPort({ port: getPort.makeRange(3000, 3100) });
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+})();

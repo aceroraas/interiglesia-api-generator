@@ -101,9 +101,9 @@ if ! npm list -g prisma &> /dev/null; then
 fi
 
 # Verificar si @prisma/client, express, bcryptjs y jsonwebtoken están instalados
-if ! npm list @prisma/client express bcryptjs jsonwebtoken dotenv cors &> /dev/null; then
-    echo "Instalando @prisma/client, express, bcryptjs y jsonwebtoken dotenv cors..."
-    npm install @prisma/client express bcryptjs jsonwebtoken dotenv cors
+if ! npm list @prisma/client express bcryptjs jsonwebtoken dotenv cors get-port&> /dev/null; then
+    echo "Instalando @prisma/client, express, bcryptjs y jsonwebtoken dotenv cors get-port..."
+    npm install @prisma/client express bcryptjs jsonwebtoken dotenv cors get-port
 fi
 
 # Ejecutar la migración de Prisma

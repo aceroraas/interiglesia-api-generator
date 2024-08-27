@@ -1,1 +1,1 @@
-# interiglesia-api
+# interiglesia-api-generator
