@@ -1,9 +1,10 @@
-const express = require('express');
-const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
-const getPort = require('get-port');
+import express from 'express';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import cors from 'cors';
+import getPort from 'get-port';
+
 
 const prisma = new PrismaClient();
 const app = express();
@@ -11,6 +12,9 @@ app.use(express.json());
 app.use(cors());
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const generatePortRange = (start, end) => {
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+};
 
 // Middleware para registrar solicitudes
 app.use((req, res, next) => {
@@ -215,8 +219,7 @@ app.get('/installtokens', authenticateToken, async (req, res) => {
 });
 
 (async () => {
-  const port = await getPort({ port: getPort.makeRange(3000, 3100) });
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-  });
+  const portRange = generatePortRange(3000, 3100);
+  const port = await getPort({ port: portRange });
+  console.log(`Puerto disponible: ${port}`);
 })();
