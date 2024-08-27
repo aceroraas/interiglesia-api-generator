@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Entity {
+  id                        Int                         @id @default(autoincrement())
+  hashId                    String                      @unique
+  name                      String
+  legalIdentificationNumber String
+  applications              EntityApplication[]
+  installationHistory       EntityInstallationHistory[]
+}
+
+model Application {
+  id                  Int                         @id @default(autoincrement())
+  name                String
+  gitUrl              String
+  softwareVersion     String
+  commitHash          String
+  entities            EntityApplication[]
+  installationHistory EntityInstallationHistory[]
+}
+
+model Status {
+  id                  Int                         @id @default(autoincrement())
+  name                String                      @unique
+  applications        EntityApplication[]
+  installationHistory EntityInstallationHistory[]
+}
+
+model InstallationOperation {
+  id                  Int                         @id @default(autoincrement())
+  name                String                      @unique
+  installationHistory EntityInstallationHistory[]
+}
+
+model EntityApplication {
+  id                        Int                         @id @default(autoincrement())
+  entity                    Entity                      @relation(fields: [entityId], references: [id])
+  entityId                  Int
+  application               Application                 @relation(fields: [applicationId], references: [id])
+  applicationId             Int
+  status                    Status                      @relation(fields: [statusId], references: [id])
+  statusId                  Int
+  installedVersion          String
+  installationHash          String
+  host                      String
+  port                      Int
+  EntityInstallationHistory EntityInstallationHistory[]
+}
+
+model EntityInstallationHistory {
+  id                  Int                   @id @default(autoincrement())
+  entity              Entity                @relation(fields: [entityId], references: [id])
+  entityId            Int
+  application         Application           @relation(fields: [applicationId], references: [id])
+  applicationId       Int
+  operation           InstallationOperation @relation(fields: [operationId], references: [id])
+  operationId         Int
+  status              Status                @relation(fields: [statusId], references: [id])
+  statusId            Int
+  commitHash          String
+  operationDate       DateTime              @default(now())
+  entityApplication   EntityApplication     @relation(fields: [entityApplicationId], references: [id])
+  entityApplicationId Int
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  sessions     Session[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  jwtToken  String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+
+model InstallationToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
