@@ -1,6 +1,4 @@
 import { prisma } from "../services/prismaClient.js";
-import { checkAndDeleteExpiredInstallToken } from "./checkAndDeleteExpiredInstallToken.js";
-import { deleteExpiredAuthToken } from "./deleteExpiredAuthToken.js";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
@@ -37,4 +35,28 @@ export const authenticateToken = async (req, res, next) => {
          next();
       });
    }
+};
+
+
+export const checkAndDeleteExpiredInstallToken = async (token) => {
+   const tokenRecord = await prisma.installationToken.findUnique({
+      where: { token },
+   });
+
+   if (tokenRecord && new Date() > new Date(tokenRecord.expiresAt)) {
+      await prisma.installationToken.delete({
+         where: { token },
+      });
+      return true; // Token was expired and deleted
+   }
+   return false; // Token is still valid
+};
+
+
+
+
+export const deleteExpiredAuthToken = async (token) => {
+   await prisma.session.delete({
+      where: { jwtToken: token },
+   });
 };
