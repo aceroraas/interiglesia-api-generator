@@ -1,10 +1,12 @@
 import { prisma } from "../services/prismaClient.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
+import { getJwtSecret } from "../services/jwtSecret.js";
 
 
 export const loginController = async (req, res) => {
    try {
+      const JWT_SECRET = getJwtSecret();
       const { username, password } = req.body;
       if (!username || !password) {
          return res.status(400).json({ error: 'Faltan credenciales' });

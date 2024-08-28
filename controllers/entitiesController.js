@@ -1,3 +1,4 @@
+import { generateHash } from "../services/generateHash.js";
 import { prisma } from "../services/prismaClient.js";
 
 export const createEntity = async (req, res) => {
@@ -6,7 +7,7 @@ export const createEntity = async (req, res) => {
       if (!name || !legalIdentificationNumber) {
          return res.status(400).json({ error: 'Faltan parámetros: name y legalIdentificationNumber son requeridos' });
       }
-      const hashId = randomBytes(16).toString('hex');
+      const hashId = generateHash(16);
       const entity = await prisma.entity.create({ data: { name, legalIdentificationNumber, hashId } });
       res.json(entity);
    } catch (error) {

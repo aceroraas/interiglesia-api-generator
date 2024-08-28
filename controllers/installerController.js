@@ -1,12 +1,15 @@
 import { prisma } from "../services/prismaClient.js";
-import { randomBytes } from 'crypto';
 import fs from 'fs';
+import jwt from 'jsonwebtoken'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateHash } from "../services/generateHash.js";
+import { getJwtSecret } from "../services/jwtSecret.js";
 
 export const createInstallerToken = async (res) => {
    try {
-      const token = randomBytes(32).toString('hex');
+      const JWT_SECRET = getJwtSecret();
+      const token = jwt.sign(null, JWT_SECRET, { expiresIn: '1h' });
       const expiresAt = new Date(Date.now() + 3600 * 1000); // Token expira en 1 hora
       const newToken = await prisma.installationToken.create({
          data: { token, expiresAt }
@@ -74,7 +77,7 @@ export const generateInstallerFile = async (req, res) => {
          return res.status(404).send('Entidad, aplicación o token no encontrado');
       }
 
-      const install_hash = generateInstallHash();
+      const install_hash = generateHash(16);
       const entity_hash = entity.hashId;
       const install_token = installationToken.token;
       const github_url = application.gitUrl;

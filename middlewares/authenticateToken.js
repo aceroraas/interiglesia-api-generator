@@ -1,5 +1,7 @@
+import { getJwtSecret } from "../services/jwtSecret.js";
 import { prisma } from "../services/prismaClient.js";
-const JWT_SECRET = process.env.JWT_SECRET;
+import jwt from 'jsonwebtoken'
+
 
 
 export const checkAndDeleteExpiredInstallToken = async (token) => {
@@ -26,6 +28,7 @@ export const deleteExpiredAuthToken = async (token) => {
 
 
 export const authenticateToken = async (req, res, next) => {
+   const JWT_SECRET = getJwtSecret();
    const authToken = req.header('Authorization')?.split(' ')[1];
    const installToken = req.query.install_token || req.body.install_token;
    if (!authToken && !installToken) return res.sendStatus(401);
