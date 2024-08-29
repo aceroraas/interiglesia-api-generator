@@ -41,10 +41,7 @@ CREATE TABLE "EntityApplication" (
     "entityId" INTEGER NOT NULL,
     "applicationId" INTEGER NOT NULL,
     "statusId" INTEGER NOT NULL,
-    "installedVersion" TEXT NOT NULL,
-    "installationHash" TEXT NOT NULL,
-    "host" TEXT NOT NULL,
-    "port" INTEGER NOT NULL,
+    "install_hash" TEXT NOT NULL,
 
     CONSTRAINT "EntityApplication_pkey" PRIMARY KEY ("id")
 );
@@ -56,7 +53,6 @@ CREATE TABLE "EntityInstallationHistory" (
     "applicationId" INTEGER NOT NULL,
     "operationId" INTEGER NOT NULL,
     "statusId" INTEGER NOT NULL,
-    "commitHash" TEXT NOT NULL,
     "operationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "entityApplicationId" INTEGER NOT NULL,
 
@@ -102,6 +98,9 @@ CREATE UNIQUE INDEX "Status_name_key" ON "Status"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "InstallationOperation_name_key" ON "InstallationOperation"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EntityApplication_install_hash_key" ON "EntityApplication"("install_hash");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");

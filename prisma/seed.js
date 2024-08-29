@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcryptjs');
-require('dotenv').config();
+import bcrypt from 'bcryptjs';
+import { prisma } from '../services/prismaClient.js';
 
-const prisma = new PrismaClient();
+
+
 
 async function main() {
   const password = process.env.INSTALL_PASSWORD;

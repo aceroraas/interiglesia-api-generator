@@ -47,10 +47,7 @@ model EntityApplication {
   applicationId             Int
   status                    Status                      @relation(fields: [statusId], references: [id])
   statusId                  Int
-  installedVersion          String
-  installationHash          String
-  host                      String
-  port                      Int
+  install_hash              String                      @unique
   EntityInstallationHistory EntityInstallationHistory[]
 }
 
@@ -64,7 +61,6 @@ model EntityInstallationHistory {
   operationId         Int
   status              Status                @relation(fields: [statusId], references: [id])
   statusId            Int
-  commitHash          String
   operationDate       DateTime              @default(now())
   entityApplication   EntityApplication     @relation(fields: [entityApplicationId], references: [id])
   entityApplicationId Int
@@ -86,7 +82,6 @@ model Session {
   createdAt DateTime @default(now())
   expiresAt DateTime
 }
-
 
 model InstallationToken {
   id        Int      @id @default(autoincrement())
