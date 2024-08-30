@@ -23,3 +23,6 @@ app.use(router);
   });
   console.log(`Puerto disponible: ${port}`);
 })();
+
+
+export default app;
